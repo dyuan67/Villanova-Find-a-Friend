@@ -15,16 +15,24 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function AppNavigation() {
+
+    const HomeTabs = () => {
+        return (
+            <Tab.Navigator>
+                <Tab.Screen name = "Home" component = {HomeScreen} />
+                <Tab.Screen name = "Profile" component = {ProfileScreen} />
+                <Tab.Screen name = "Questionnaire" component = {QuestionnaireScreen} />
+            </Tab.Navigator>
+        );
+    }
     return (
         <NavigationContainer>
-            <Stack.Navigator>
+            <Stack.Navigator initialRouteName = "Welcome"
+            screenOptions={{ headerShown: false}}>
+
                 <Stack.Screen name = "Welcome" component = {WelcomeScreen} />
-                <Stack.Screen name = "Home" component = {HomeScreen} />
-                <Stack.Screen name = "Profile" component = {ProfileScreen} />
-                <Stack.Screen name = "Questionnaire" component = {QuestionnaireScreen} />
                 <Stack.Screen name = "Matches" component = {MatchesScreen} />
-
-
+                <Stack.Screen name = "Home" component = {HomeTabs} />
 
             </Stack.Navigator>
         </NavigationContainer>
