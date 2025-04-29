@@ -24,14 +24,16 @@ export default function AppNavigation() {
                 <Tab.Screen name = "Questionnaire" component = {QuestionnaireScreen} />
             </Tab.Navigator>
         );
-    }
+    };
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName = "Welcome"
-            screenOptions={{ headerShown: false}}>
+            <Stack.Navigator initialRouteName = "Welcome">
 
                 <Stack.Screen name = "Welcome" component = {WelcomeScreen} />
-                <Stack.Screen name = "Matches" component = {MatchesScreen} />
+                <Stack.Screen name = "Matches" 
+                    component = {MatchesScreen} 
+                    options = {{presentation : "modal",}}
+                />
                 <Stack.Screen name = "Home" component = {HomeTabs} />
 
             </Stack.Navigator>
