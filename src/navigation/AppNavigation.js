@@ -27,7 +27,8 @@ export default function AppNavigation() {
     };
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName = "Welcome">
+            <Stack.Navigator initialRouteName = "Welcome"
+            screenOptions={{ headerShown: false}}>
 
                 <Stack.Screen name = "Welcome" component = {WelcomeScreen} />
                 <Stack.Screen name = "Matches" 

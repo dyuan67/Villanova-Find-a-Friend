@@ -1,8 +1,9 @@
-import { View, Text } from 'react-native';
+import { View, Text, Image} from 'react-native';
 import React from 'react';
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 
 export default function WelcomeScreen() {
@@ -23,8 +24,63 @@ export default function WelcomeScreen() {
       }
 
     return (
-        <View onLayout = {onLayoutRootView}>
-            <Text>WelcomeScreen</Text>
+        <View onLayout = {onLayoutRootView}
+            className = "flex-1"
+            style = {{
+                width: wp(100),
+            }}
+         >
+            <View className = "justify-center items-center"
+                style = {{
+                    width: wp(100),
+                    height: hp(100),
+                }}
+            >
+                {/*Image */}
+                <View className = "justify-center items-center my-4"
+                    style = {{
+                        width: wp(100),
+                    }}
+                >
+                    <Image
+                        source={require("../../assets/villanova_wildcats.png")}
+                        style={{
+                            width: wp(100),
+                            height: hp(40),
+                            resizeMode: "cover",
+                        }}
+                    />
+                </View>
+
+                {/*Welcome Text*/}
+                <View className = "w-full p-6 px-10">
+                    <Text className = "font-semibold  tracking-widest leading-none"
+                        style = {{
+                            fontSize: wp(10),
+                            fontFamily: "SpaceGroteskBold"
+                        }}
+                    >
+                        blah blah blah
+                    </Text>
+                    
+                    <Text className = "tracking-widest w-[70%] leading-none"
+                        style={{
+                            fontSize: wp(10),
+                            fontFamily: "SpaceGroteskBold"
+                        }}
+                    >
+                        Trial Run
+                    </Text>
+
+                    <Text className="text-gray-800 leading-6 tracking-wider w-[70%] mt-2"
+                        style={{
+                            fontSize: wp(4),
+                        }}
+                    >
+                        Words Words Words Words Words Words Words Words Words Words
+                    </Text>
+                </View>
+            </View>
         </View>
     )
 }
