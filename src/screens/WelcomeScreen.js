@@ -1,9 +1,10 @@
-import { View, Text, Image} from 'react-native';
+import { View, Text, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { ArrowUpRightIcon } from "react-native-heroicons/outline"
 
 
 export default function WelcomeScreen() {
@@ -79,6 +80,20 @@ export default function WelcomeScreen() {
                     >
                         Words Words Words Words Words Words Words Words Words Words
                     </Text>
+                </View>
+
+                <View className="w-full px-10">
+                    <TouchableOpacity className = "bg-blue-600 px-4 py-4 rounded-x1 flex-row justify-center items-center w-[45%]">
+                        <Text className = "text-white font-bold mr-2"
+                            style = {{
+                                fontSize: wp(3.5),
+                                fontFamily: "SpaceGroteskMedium"
+                            }}
+                        >
+                            Get Started
+                        </Text>
+                        <ArrowUpRightIcon color = {"white"} size = {20} strokeWidth = {2.5} />
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>
