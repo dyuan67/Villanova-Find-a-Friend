@@ -36,7 +36,7 @@ export default function WelcomeScreen() {
                 <View style = {{paddingTop: 1, justifyContent:'center', alignItems: 'center', marginVertical: 4, width: wp(100) }}>
                     <Image
                         source = {require("../../assets/villanova_wildcats.png")}
-                        style = {{width: wp(100), height: hp(40), resizeMode: "cover"}}
+                        style = {{width: wp(100), height: hp(48), resizeMode: "cover"}}
                     />
                 </View>
 
