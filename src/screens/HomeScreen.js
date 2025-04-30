@@ -4,27 +4,27 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
-import { db } from '../firebase'; // ✅ NEW
-import { doc, setDoc } from 'firebase/firestore'; // ✅ NEW
+import { db } from '../firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [username, setUsername] = useState(''); // user email
+  const [username, setUsername] = useState('');
 
   const handleLogin = async () => {
     if (firstName && lastName && username) {
       if (username.toLowerCase().endsWith("villanova.edu")) {
         try {
-          // ✅ Store user info in Firestore
+          //Save user info to Firestore
           const userRef = doc(db, "users", username.toLowerCase());
           await setDoc(userRef, {
             fullName: `${firstName} ${lastName}`,
             email: username.toLowerCase(),
-            profilePic: null, // optionally update later
-            answers: null, // to be filled after questionnaire
+            profilePic: null,
+            answers: null,
             createdAt: Date.now(),
           });
 
@@ -32,8 +32,8 @@ export default function HomeScreen() {
             { text: "Continue", onPress: () => navigation.replace("HomeTabs") },
           ]);
         } catch (error) {
-          console.error("Firestore Error:", error);
-          Alert.alert("Error", "Failed to save user data.");
+          console.error("Firestore error:", error);
+          Alert.alert("Error", "Failed to save user info.");
         }
       } else {
         Alert.alert("Invalid Email", "Please provide a valid Villanova email!");
