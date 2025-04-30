@@ -1,5 +1,5 @@
 import { View, Text, TextInput, Button, Image, StyleSheet, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 
 export default function ProfileScreen() {
@@ -36,9 +36,19 @@ export default function ProfileScreen() {
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
-      <ScrollView contentContainerStyle={styles.contentContainer}>
-        {!submitted ? (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      {submitted ? (
+        <View style={styles.profileContainer}>
+            <Image source={{ uri: image }} style={styles.profileImage} />
+            <Text style={styles.profileText}>Name: {name}</Text>
+            <Text style={styles.profileText}>Email: {email}</Text>
+            <Button title="Edit" onPress={() => setSubmitted(false)} />
+        </View>
+      ) : (
+        <ScrollView contentContainerStyle={styles.contentContainer}>
           <View style={styles.form}>
             <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
               {image ? (
@@ -62,15 +72,8 @@ export default function ProfileScreen() {
             />
             <Button title="Submit" onPress={handleSubmit} />
           </View>
-        ) : (
-          <View style={styles.profile}>
-            <Image source={{ uri: image }} style={styles.profileImage} />
-            <Text style={styles.profileText}>Name: {name}</Text>
-            <Text style={styles.profileText}>Email: {email}</Text>
-            <Button title="Edit" onPress={() => setSubmitted(false)} />
-          </View>
-        )}
-      </ScrollView>
+        </ScrollView>
+      )}
     </KeyboardAvoidingView>
   );
 }
@@ -82,6 +85,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 20,
+    paddingTop: 120,
     alignItems: 'center',
   },
   form: {
@@ -115,17 +119,27 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   profile: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: 120,
+  },
+  profileContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 120,
   },
   profileImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
+    width: 400,
+    height: 400,
+    borderRadius: 200,
     marginBottom: 20,
   },
   profileText: {
     fontSize: 18,
     marginBottom: 10,
   },
+ 
 });
 
