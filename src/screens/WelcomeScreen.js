@@ -88,14 +88,16 @@ export default function WelcomeScreen() {
                 </View>
 
                 <View className="w-full px-10">
-                    <TouchableOpacity className = "bg-blue-600 px-4 py-4 rounded-xl flex-row justify-center items-center w-[45%]"
+                    <TouchableOpacity 
+                        className = "bg-blue-600 px-4 py-4 rounded-xl w-[45%] items-center"
                         onPress={() => navigation.navigate("HomeTabs")}>
-                        <Text className = "text-white font-bold mr-2"
-                            style = {{
-                                fontSize: wp(3.5),
-                                fontFamily: "SpaceGroteskMedium"
-                            }}
-                        >
+                        <View className="flex-row items-center justify-center">
+                            <Text className = "text-white font-bold mr-2"
+                                style = {{
+                                    fontSize: wp(3.5),
+                                    fontFamily: "SpaceGroteskMedium"
+                                }}
+                            >
                             Get Started
                         </Text>
                         <ArrowUpRightIcon color = {"white"} size = {20} strokeWidth = {2.5} />
