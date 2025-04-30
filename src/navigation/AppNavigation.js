@@ -54,7 +54,7 @@ export default function AppNavigation() {
             >
                 <Tab.Screen name = "Home" component = {HomeScreen} />
                 <Tab.Screen name = "Profile" component = {ProfileScreen} />
-                <Tab.Screen name = "Matches" component = {MatchesScreen} />
+                <Tab.Screen name = "Matches" component = {QuestionnaireScreen} />
             </Tab.Navigator>
         );
     };

@@ -30,81 +30,43 @@ export default function WelcomeScreen() {
       }
 
     return (
-        <View onLayout = {onLayoutRootView}
-            className = "flex-1"
-            style = {{
-                width: wp(100),
-            }}
-         >
-            <View className = "justify-center items-center"
-                style = {{
-                    width: wp(100),
-                    height: hp(100),
-                }}
-            >
+        <View onLayout = {onLayoutRootView} style = {{ flex: 1, width: wp(100) }}>
+            <View style = {{justifyContent: 'center', alignItems: 'center', width: wp(100), height: hp(100) }} >
                 {/*Image */}
-                <View className = " pt-1 justify-center items-center my-4"
-                    style = {{
-                        width: wp(100),
-                    }}
-                >
+                <View style = {{paddingTop: 1, justifyContent:'center', alignItems: 'center', marginVertical: 4, width: wp(100) }}>
                     <Image
-                        source={require("../../assets/villanova_wildcats.png")}
-                        style={{
-                            width: wp(100),
-                            height: hp(40),
-                            resizeMode: "cover",
-                        }}
+                        source = {require("../../assets/villanova_wildcats.png")}
+                        style = {{width: wp(100), height: hp(40), resizeMode: "cover"}}
                     />
                 </View>
 
                 {/*Welcome Text*/}
-                <View className = "w-full p-6 px-10">
-                    <Text className = "font-semibold  tracking-widest leading-none"
-                        style = {{
-                            fontSize: wp(10),
-                            fontFamily: "SpaceGroteskBold"
-                        }}
-                    >
-                        blah blah blah
+                <View style = {{width: '100%', padding: 6, paddingHorizontal: 10}}>
+                    <Text style = {{fontSize: wp(10), fontFamily: "SpaceGroteskBold", fontWeight: '600', letterSpacing: 2, lineHeight: 0}}>
+                        blah blah blah blah blah blah try try try try try
                     </Text>
-                    
-                    <Text className = "tracking-widest w-[70%] leading-none"
-                        style={{
-                            fontSize: wp(10),
-                            fontFamily: "SpaceGroteskBold"
-                        }}
-                    >
-                        Trial Run
+                    <Text style = {{fontSize: wp(10), fontFamily: "SpaceGroteskBold", letterSpacing: 2, lineHeight: 0, width: '70%'}} >
+                        Trial Run Stuff
                     </Text>
-
-                    <Text className="text-gray-800 leading-6 tracking-wider w-[70%] mt-2"
-                        style={{
-                            fontSize: wp(4),
-                        }}
-                    >
-                        Words Words Words Words Words Words Words Words Words Words
+                    <Text style = {{fontSize: wp(4), color: '#4A4A4A', lineHeight: 24, letterSpacing: 1, width: '70%', marginTop: 8}}>
+                        Word words words Word words words Word words words Word words words
                     </Text>
                 </View>
 
-                <View className="w-full px-10">
-                    <TouchableOpacity 
-                        className = "bg-blue-600 px-4 py-4 rounded-xl w-[45%] items-center"
-                        onPress={() => navigation.navigate("HomeTabs")}>
-                        <View className="flex-row items-center justify-center">
-                            <Text className = "text-white font-bold mr-2"
-                                style = {{
-                                    fontSize: wp(3.5),
-                                    fontFamily: "SpaceGroteskMedium"
-                                }}
-                            >
+                <View style = {{width: '100%', paddingHorizontal: 10}}>
+                    <TouchableOpacity
+                        style = {{backgroundColor: '#2563EB', paddingVertical: 16, paddingHorizontal: 16, borderRadius: 16, width: '45%', alignItems: 'center'}}
+                        onPress={() => navigation.navigate("HomeTabs")}
+                    >
+                        <View style = {{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                            <Text style = {{fontSize: wp(3.5), fontFamily: "SpaceGroteskMedium", fontWeight: '700', color: 'white', marginRight: 8}}>
                                 Get Started
                             </Text>
+                            <ArrowUpRightIcon color={"white"} size={20} strokeWidth={2.5} />
                         </View>
-                        <ArrowUpRightIcon color = {"white"} size = {20} strokeWidth = {2.5} />
                     </TouchableOpacity>
                 </View>
             </View>
         </View>
-    )
+    );
 }
