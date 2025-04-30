@@ -35,16 +35,6 @@ export default function QuestionnaireScreen() {
           </Pressable>
         ))}
       </View>
-
-      <View style={styles.legendBox}>
-        <Text style={styles.legendTitle}>Answer Key:</Text>
-        <Text style={styles.legendLine}>1 = Strongly Disagree</Text>
-        <Text style={styles.legendLine}>2 = Slightly Disagree</Text>
-        <Text style={styles.legendLine}>3 = Neutral</Text>
-        <Text style={styles.legendLine}>4 = Slightly Agree</Text>
-        <Text style={styles.legendLine}>5 = Strongly Agree</Text>
-      </View>
-
     </View>
   );
 
@@ -88,6 +78,15 @@ export default function QuestionnaireScreen() {
         renderItem={renderQuestion}
         scrollEnabled={false}
       />
+
+      <View style={styles.legendBox}>
+        <Text style={styles.legendTitle}>Answer Key:</Text>
+        <Text style={styles.legendLine}>1 = Strongly Disagree</Text>
+        <Text style={styles.legendLine}>2 = Slightly Disagree</Text>
+        <Text style={styles.legendLine}>3 = Neutral</Text>
+        <Text style={styles.legendLine}>4 = Slightly Agree</Text>
+        <Text style={styles.legendLine}>5 = Strongly Agree</Text>
+      </View>
 
       <View style={styles.submitButton}>
         <Button title="Submit" onPress={handleSubmit} />
