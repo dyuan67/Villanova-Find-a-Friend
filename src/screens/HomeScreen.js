@@ -45,7 +45,6 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Image source={require('../../assets/images/villanova_wildcats.png')} />
 
       <View style={styles.container}>
         <Text style={styles.title}>Let's Get Started</Text>
