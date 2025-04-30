@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import {View, Text, Pressable, FlatList, StyleSheet, ScrollView, Alert, Button,} from 'react-native';
+import { db } from '../firebase';
+import { addDoc, collection } from 'firebase/firestore';
 
 const questions = [
   { id: 'q1', text: 'I enjoy socializing with others.' },
@@ -20,7 +22,7 @@ export default function QuestionnaireScreen() {
     <View style={styles.questionBlock}>
       <Text style={styles.questionText}>{item.text}</Text>
       <View style={styles.optionsRow}>
-        {[1, 2, 3, 4, 5].map((value) => (
+        {[1, 2, 3, 4, 5].map((value) => ( //questions
           <Pressable
             key={value}
             onPress={() => handleAnswer(item.id, value)}
@@ -34,30 +36,45 @@ export default function QuestionnaireScreen() {
         ))}
       </View>
 
-      <View style={styles.labelRow}>
-        <Text style={styles.labelText}>Strongly Disagree</Text>
-        <Text style={styles.labelText}>Neutral</Text>
-        <Text style={styles.labelText}>Strongly Agree</Text>
+      <View style={styles.legendBox}>
+        <Text style={styles.legendTitle}>Answer Key:</Text>
+        <Text style={styles.legendLine}>1 = Strongly Disagree</Text>
+        <Text style={styles.legendLine}>2 = Slightly Disagree</Text>
+        <Text style={styles.legendLine}>3 = Neutral</Text>
+        <Text style={styles.legendLine}>4 = Slightly Agree</Text>
+        <Text style={styles.legendLine}>5 = Strongly Agree</Text>
       </View>
+
     </View>
   );
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const unanswered = questions
       .filter((q) => answers[q.id] == null)
-      .map((q, i) => i + 1); // convert to question numbers
-  
+      .map((q, i) => i + 1);
+
     if (unanswered.length > 0) {
       const message =
         unanswered.length === 1
           ? `Please answer Question ${unanswered[0]} before submitting.`
           : `Please answer Questions: ${unanswered.join(', ')} before submitting.`;
-  
+
       Alert.alert('Incomplete', message);
       return;
     }
-  
-    Alert.alert('Thank you!', 'You have completed the questionnaire.');
+
+    try {
+      //save answers to Firestore anonymously for now
+      await addDoc(collection(db, 'questionnaires'), {
+        answers,
+        submittedAt: Date.now(),
+      });
+
+      Alert.alert('Thank you!', 'Your answers have been saved.');
+    } catch (error) {
+      console.error('Error saving questionnaire:', error);
+      Alert.alert('Error', 'Something went wrong while saving.');
+    }
   };
   
 
@@ -121,6 +138,17 @@ const styles = StyleSheet.create({
   debugText: {
     marginTop: 30,
     fontSize: 12,
+    color: 'gray',
+  },
+  legendBox: {
+    marginTop: 20,
+  },
+  legendTitle: {
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  legendLine: {
+    fontSize: 13,
     color: 'gray',
   },
 });
