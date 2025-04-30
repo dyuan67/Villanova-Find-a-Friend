@@ -28,6 +28,16 @@ export default function HomeScreen() {
                 />
             </View>
 
+            {/* Brand name */}
+            <View>
+                <Text className = "text-xl font-semibold text-center uppercase">
+                    Find a Friend
+                </Text>
+            </View>
+            
+            {}
+
+
             <Text>HomeScreen</Text>
         </SafeAreaView>
     );

@@ -29,6 +29,8 @@ export default function AppNavigation() {
                             iconName = "happy-outline";
                           } else if (route.name === "Profile") {
                             iconName = "person-outline";
+                          } else if (route.name === "Questionnaire") {
+                            iconName = "chatbubbles-outline";
                           }
               
                           const customizeSize = 25;
@@ -52,9 +54,10 @@ export default function AppNavigation() {
                      },
                 })}
             >
-                <Tab.Screen name = "Home" component = {HomeScreen} />
+                
                 <Tab.Screen name = "Profile" component = {ProfileScreen} />
-                <Tab.Screen name = "Matches" component = {QuestionnaireScreen} />
+                <Tab.Screen name = "Questionnaire" component = {QuestionnaireScreen} />
+                <Tab.Screen name = "Matches" component = {MatchesScreen} />
             </Tab.Navigator>
         );
     };
