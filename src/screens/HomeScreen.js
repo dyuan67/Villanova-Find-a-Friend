@@ -29,7 +29,7 @@ export default function HomeScreen() {
     return (
         <SafeAreaView style = {styles.safeArea}>
         <View style = {styles.container}>
-            <Text style= {styles.title}>👋 Let's Get Started</Text>
+            <Text style= {styles.title}> Let's Get Started</Text>
             <Text style = {styles.subtitle}>Enter your details to continue</Text>
 
             {/* First Name Input */}
