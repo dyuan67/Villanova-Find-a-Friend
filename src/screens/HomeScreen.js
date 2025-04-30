@@ -2,7 +2,7 @@ import { View, Text, Image } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from "react-native-safe-area-context";
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import profile from "../../assets/images/profile.jpeg"
+
 
 export default function HomeScreen() {
     return (
@@ -18,7 +18,7 @@ export default function HomeScreen() {
                 {/* Image */}
                 <View className = "rounded-fill items-center justify-center"></View>
                 <Image 
-                    source = {profile}
+                    source = {require('../../assets/images/profile.jpeg')}
                     style = {{
                         width: hp(4.5),
                         height: hp(4.5),
