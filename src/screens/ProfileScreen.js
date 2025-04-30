@@ -107,8 +107,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   image: {
-    width: 150,
-    height: 150,
+    width: 200,
+    height: 200,
   },
   input: {
     width: '100%',
@@ -131,9 +131,9 @@ const styles = StyleSheet.create({
     paddingTop: 120,
   },
   profileImage: {
-    width: 400,
-    height: 400,
-    borderRadius: 200,
+    width: 300,
+    height: 300,
+    borderRadius: 150,
     marginBottom: 20,
   },
   profileText: {
