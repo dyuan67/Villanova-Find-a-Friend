@@ -7,6 +7,7 @@ import { useColorScheme } from "nativewind";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { ArrowUpRightIcon } from "react-native-heroicons/outline"
 import { useNavigation } from '@react-navigation/native';
+import HomeScreen from './HomeScreen';
 
 
 export default function WelcomeScreen() {
@@ -56,7 +57,7 @@ export default function WelcomeScreen() {
                 <View style = {{width: '100%', paddingHorizontal: 10}}>
                     <TouchableOpacity
                         style = {{backgroundColor: '#2563EB', paddingVertical: 16, paddingHorizontal: 16, borderRadius: 16, width: '45%', alignItems: 'center'}}
-                        onPress={() => navigation.navigate("HomeTabs")}
+                        onPress={() => navigation.replace("Home")}
                     >
                         <View style = {{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                             <Text style = {{fontSize: wp(3.5), fontFamily: "SpaceGroteskMedium", fontWeight: '700', color: 'white', marginRight: 8}}>
