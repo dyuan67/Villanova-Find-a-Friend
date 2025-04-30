@@ -33,22 +33,33 @@ export default function QuestionnaireScreen() {
           </Pressable>
         ))}
       </View>
+
+      <View style={styles.labelRow}>
+        <Text style={styles.labelText}>Strongly Disagree</Text>
+        <Text style={styles.labelText}>Neutral</Text>
+        <Text style={styles.labelText}>Strongly Agree</Text>
+      </View>
     </View>
   );
 
   const handleSubmit = () => {
-    const unanswered = questions.find((q, i) => answers[q.id] == null);
-    if (unanswered) {
-      Alert.alert(
-        'Incomplete',
-        `Please answer Question ${questions.findIndex(q => q.id === unanswered.id) + 1} before submitting.`
-      );
+    const unanswered = questions
+      .filter((q) => answers[q.id] == null)
+      .map((q, i) => i + 1); // convert to question numbers
+  
+    if (unanswered.length > 0) {
+      const message =
+        unanswered.length === 1
+          ? `Please answer Question ${unanswered[0]} before submitting.`
+          : `Please answer Questions: ${unanswered.join(', ')} before submitting.`;
+  
+      Alert.alert('Incomplete', message);
       return;
     }
   
     Alert.alert('Thank you!', 'You have completed the questionnaire.');
-    // console.log(answers); // save to Firebase if needed
   };
+  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
