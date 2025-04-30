@@ -37,8 +37,17 @@ export default function QuestionnaireScreen() {
   );
 
   const handleSubmit = () => {
+    const unanswered = questions.find((q, i) => answers[q.id] == null);
+    if (unanswered) {
+      Alert.alert(
+        'Incomplete',
+        `Please answer Question ${questions.findIndex(q => q.id === unanswered.id) + 1} before submitting.`
+      );
+      return;
+    }
+  
     Alert.alert('Thank you!', 'You have completed the questionnaire.');
-    // console.log(answers); // TODO: save to backend later
+    // console.log(answers); // save to Firebase if needed
   };
 
   return (
@@ -56,14 +65,13 @@ export default function QuestionnaireScreen() {
         <Button title="Submit" onPress={handleSubmit} />
       </View>
 
-      <Text style={styles.debugText}>Current Answers: {JSON.stringify(answers)}</Text>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    padding: 20, 
     paddingBottom: 100,
   },
   title: {
