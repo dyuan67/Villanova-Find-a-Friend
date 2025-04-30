@@ -18,9 +18,13 @@ export default function HomeScreen() {
 
     const handleLogin = () => {
         if (firstName && lastName && username) {
+            if (username.toLowerCase().endsWith("villanova.edu")) {
             Alert.alert("Welcome", `Hi, ${firstName}!`, [
                 { text: "Continue", onPress: () => navigation.replace("HomeTabs") },
             ]);
+          } else {
+            Alert.alert("Invalid Email", "Please provide a valid Villanova email!")
+            };
         } else {
             Alert.alert("Missing Info", "Please fill out all fields!");
         }
@@ -28,6 +32,8 @@ export default function HomeScreen() {
 
     return (
         <SafeAreaView style = {styles.safeArea}>
+        <Image src = "../../assets/images/villanova_wildcats.png" />
+
         <View style = {styles.container}>
             <Text style= {styles.title}> Let's Get Started</Text>
             <Text style = {styles.subtitle}>Enter your details to continue</Text>

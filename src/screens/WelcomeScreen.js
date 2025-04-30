@@ -57,7 +57,7 @@ export default function WelcomeScreen() {
                 <View style = {{width: '100%', paddingHorizontal: 10}}>
                     <TouchableOpacity
                         style = {{backgroundColor: '#2563EB', paddingVertical: 16, paddingHorizontal: 16, borderRadius: 16, width: '45%', alignItems: 'center'}}
-                        onPress={() => navigation.replace("Home")}
+                        onPress={() => navigation.navigate("Home")}
                     >
                         <View style = {{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                             <Text style = {{fontSize: wp(3.5), fontFamily: "SpaceGroteskMedium", fontWeight: '700', color: 'white', marginRight: 8}}>

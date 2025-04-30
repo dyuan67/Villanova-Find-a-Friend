@@ -71,6 +71,7 @@ export default function ProfileScreen() {
               style={styles.input}
               keyboardType="email-address"
             />
+            
             <Button title="Submit" onPress={handleSubmit} />
           </View>
         </ScrollView>
@@ -143,4 +144,3 @@ const styles = StyleSheet.create({
   },
  
 });
-
