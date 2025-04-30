@@ -35,7 +35,7 @@ export default function AppNavigation() {
                     component = {MatchesScreen} 
                     options = {{presentation : "modal",}}
                 />
-                <Stack.Screen name = "Home" component = {HomeTabs} />
+                <Stack.Screen name = "HomeTabs" component = {HomeTabs} />
 
             </Stack.Navigator>
         </NavigationContainer>

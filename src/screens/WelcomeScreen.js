@@ -3,11 +3,16 @@ import React from 'react';
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
+import { useColorScheme } from "nativewind";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { ArrowUpRightIcon } from "react-native-heroicons/outline"
+import { useNavigation } from '@react-navigation/native';
 
 
 export default function WelcomeScreen() {
+
+    const navigation = useNavigation();
+
     const [fontsLoaded, fontError] = useFonts({
         SpaceGroteskSemiBold: require("../font/SpaceGrotesk-SemiBold.ttf"),
         SpaceGroteskBold: require("../font/SpaceGrotesk-Bold.ttf"),
@@ -38,7 +43,7 @@ export default function WelcomeScreen() {
                 }}
             >
                 {/*Image */}
-                <View className = "justify-center items-center my-4"
+                <View className = " pt-1 justify-center items-center my-4"
                     style = {{
                         width: wp(100),
                     }}
@@ -83,7 +88,8 @@ export default function WelcomeScreen() {
                 </View>
 
                 <View className="w-full px-10">
-                    <TouchableOpacity className = "bg-blue-600 px-4 py-4 rounded-x1 flex-row justify-center items-center w-[45%]">
+                    <TouchableOpacity className = "bg-blue-600 px-4 py-4 rounded-xl flex-row justify-center items-center w-[45%]"
+                        onPress={() => navigation.navigate("HomeTabs")}>
                         <Text className = "text-white font-bold mr-2"
                             style = {{
                                 fontSize: wp(3.5),
