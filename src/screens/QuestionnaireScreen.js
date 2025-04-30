@@ -98,8 +98,9 @@ export default function QuestionnaireScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20, 
+    paddingTop: 60, 
     paddingBottom: 100,
+    paddingHorizontal: 24
   },
   title: {
     fontSize: 24,
