@@ -2,6 +2,7 @@ import { View, Text, TextInput, Button, Image, StyleSheet, TouchableOpacity, Scr
 import React, { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 
+
 export default function ProfileScreen() {
   const [image, setImage] = useState(null);
   const [name, setName] = useState('');
