@@ -32,8 +32,15 @@ export default function HomeScreen() {
 
           // Navigate with email to QuestionnaireScreen
           Alert.alert("Welcome", `Hi, ${firstName}!`, [
-            { text: "Continue", onPress: () => navigation.navigate("QuestionnaireScreen", { email }) },
+            {
+              text: "Continue",
+              onPress: () => navigation.replace("HomeTabs", {
+                screen: "Questionnaire",
+                params: { email },
+              }),
+            },
           ]);
+          
         } catch (error) {
           console.error("Firestore error:", error);
           Alert.alert("Error", "Failed to save user info.");
