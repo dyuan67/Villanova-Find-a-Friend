@@ -47,6 +47,7 @@ export default function QuestionnaireScreen() {
         const stored = await AsyncStorage.getItem('profileData');
         if (stored) {
           const parsed = JSON.parse(stored);
+          console.log('Loaded email from AsyncStorage:', parsed.email);
           setEmail(parsed.email);
         }
       } catch (err) {

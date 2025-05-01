@@ -1,42 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  ActivityIndicator,
-  Alert,
-} from 'react-native';
-import { db } from '../firebase'; // Assuming you're using Firestore
-import { doc, getDoc, getDocs, collection } from 'firebase/firestore';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { db } from '../firebase';
 
-export default function MatchesScreen({ route }) {
+export default function MatchesScreen() {
+  const [email, setEmail] = useState('');
+  const [fullName, setFullName] = useState('');
   const [match, setMatch] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const { email } = route.params || {}; // Check if email is passed properly
-
-  useEffect(() => {
-    if (!email) {
-      setError('No email passed to MatchesScreen');
-      setLoading(false);
-      return;
-    }
-
-    const fetchMatch = async () => {
-      const bestMatch = await findBestMatch(email);
-      if (bestMatch) {
-        setMatch(bestMatch);
-        setLoading(false);
-      } else {
-        setError('No matches found.');
-        setLoading(false);
-      }
-    };
-
-    fetchMatch();
-  }, [email]);
+  const [error, setError] = useState('');
 
   // Function to compare answers and calculate a match score
   const compareAnswers = (userAnswers, otherUserAnswers) => {
@@ -89,6 +62,32 @@ export default function MatchesScreen({ route }) {
     }
   };
 
+  useEffect(() => {
+    const loadProfileAndMatch = async () => {
+      try {
+        const profileString = await AsyncStorage.getItem('profileData');
+        if (profileString) {
+          const profile = JSON.parse(profileString);
+          console.log('Loaded profile from AsyncStorage:', profile);
+          setEmail(profile.email);
+          setFullName(profile.fullName);
+
+          const best = await findBestMatch(profile.email);
+          setMatch(best);
+        } else {
+          setError('No profile data found in AsyncStorage.');
+        }
+      } catch (e) {
+        console.error('Error loading profile data:', e);
+        setError('Failed to load profile data.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProfileAndMatch();
+  }, []);
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -108,9 +107,10 @@ export default function MatchesScreen({ route }) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Best Match</Text>
+      {email && <Text style={styles.userText}>Logged in as: {fullName} ({email})</Text>}
       {match ? (
         <View style={styles.matchContainer}>
-          <Text style={styles.matchText}>You matched with: {match.name}</Text>
+          <Text style={styles.matchText}>You matched with: {match.fullName || match.name}</Text>
           <Text style={styles.matchText}>Email: {match.email}</Text>
           <Text style={styles.matchText}>Match Score: {match.score.toFixed(2)}%</Text>
         </View>
@@ -138,6 +138,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
+  userText: {
+    fontSize: 16,
+    marginBottom: 10,
+    textAlign: 'center',
+    color: 'gray',
+  },
   matchContainer: {
     alignItems: 'center',
     marginTop: 20,
@@ -158,4 +164,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
