@@ -2,59 +2,54 @@ import { db } from './firebase';
 import { collection, getDocs } from 'firebase/firestore';
 
 /**
- * Compare two answer sets by counting how many answers match for each question.
+ * Calculate total score by summing absolute differences for each question.
+ * Lower total = more similar.
  */
-const calculateSimilarity = (a1, a2) => {
-  const keys = Object.keys(a1);
-  let matchCount = 0;
+const calculateScore = (userA, userB) => {
+  let score = 0;
+  const keys = Object.keys(userA);
 
-  // Count the number of matching answers
-  keys.forEach((q) => {
-    if (a1[q] === a2[q]) {
-      matchCount++;
-    }
+  keys.forEach((key) => {
+    const a = userA[key] ?? 0;
+    const b = userB[key] ?? 0;
+    score += Math.abs(a - b);
   });
 
-  return matchCount;
+  return score;
 };
 
 /**
- * Find best match from all users in Firestore.
- * @param {*} myAnswers - current user's questionnaire answers
- * @param {*} myEmail   - current user's email (to exclude themselves)
- * @returns profile info + match score
+ * Find the best match for a user based on questionnaire answers.
  */
 export const findBestMatch = async (myAnswers, myEmail) => {
-  try {
-    const snapshot = await getDocs(collection(db, 'users'));
-    let bestMatch = null;
-    let bestScore = -1; // Start with -1 because the match count can never be less than 0
+  const snapshot = await getDocs(collection(db, 'users'));
+  let bestMatch = null;
+  let bestScore = Infinity;
 
-    snapshot.forEach((doc) => {
-      const user = doc.data();
+  snapshot.forEach((docSnap) => {
+    const data = docSnap.data();
 
-      // Skip self or if answers are missing
-      if (user.email === myEmail || !user.answers) return;
+    if (!data.email || data.email === myEmail || !data.answers) return;
 
-      const matchCount = calculateSimilarity(myAnswers, user.answers);
+    const score = calculateScore(myAnswers, data.answers);
 
-      if (matchCount > bestScore) {
-        bestScore = matchCount;
-        bestMatch = {
-          fullName: user.fullName || 'Anonymous',
-          email: user.email,
-          profilePic: user.profilePic || null,
-          answers: user.answers,
-          matchCount,
-        };
-      }
-    });
+    if (score < bestScore) {
+      bestScore = score;
+      bestMatch = {
+        fullName: data.fullName || 'No Name',
+        email: data.email,
+        profilePic: data.profilePic || null,
+        hobbies: data.hobbies || '',
+        favoriteSong: data.favoriteSong || '',
+        hiddenTalent: data.hiddenTalent || '',
+        answers: data.answers,
+        score, // 🔥 Total difference across questions
+      };
+    }
+  });
 
-    return bestMatch;
-  } catch (error) {
-    console.error("Error finding best match:", error);
-    return null;
-  }
+  return bestMatch;
 };
+
 
 
