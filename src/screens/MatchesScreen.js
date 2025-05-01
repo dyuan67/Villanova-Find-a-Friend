@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -11,7 +11,6 @@ export default function MatchesScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Function to compare answers and calculate a match score
   const compareAnswers = (userAnswers, otherUserAnswers) => {
     let score = 0;
     const totalQuestions = Object.keys(userAnswers).length;
@@ -22,10 +21,9 @@ export default function MatchesScreen() {
       }
     });
 
-    return (score / totalQuestions) * 100; // return percentage match
+    return (score / totalQuestions) * 100;
   };
 
-  // Function to find the best match
   const findBestMatch = async (email) => {
     try {
       const userRef = doc(db, 'users', email);
@@ -43,7 +41,7 @@ export default function MatchesScreen() {
       let bestScore = 0;
 
       allUsersSnapshot.forEach((doc) => {
-        if (doc.id !== email) { // Skip the current user
+        if (doc.id !== email) {
           const otherUserAnswers = doc.data().answers;
           const score = compareAnswers(userAnswers, otherUserAnswers);
 
@@ -110,6 +108,9 @@ export default function MatchesScreen() {
       {email && <Text style={styles.userText}>Logged in as: {fullName} ({email})</Text>}
       {match ? (
         <View style={styles.matchContainer}>
+          {match.profilePic && (
+            <Image source={{ uri: match.profilePic }} style={styles.profileImage} />
+          )}
           <Text style={styles.matchText}>You matched with: {match.fullName || match.name}</Text>
           <Text style={styles.matchText}>Email: {match.email}</Text>
           <Text style={styles.matchText}>Match Score: {match.score.toFixed(2)}%</Text>
@@ -162,5 +163,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'red',
     textAlign: 'center',
+  },
+  profileImage: {
+    width: 400,
+    height: 400,
+    borderRadius: 10,
+    marginBottom: 20,
   },
 });
