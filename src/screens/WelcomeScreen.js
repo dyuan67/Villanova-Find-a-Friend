@@ -44,13 +44,13 @@ export default function WelcomeScreen() {
                 {/*Welcome Text*/}
                 <View style = {{width: '100%', padding: 6, paddingHorizontal: 10}}>
                     <Text style = {{fontSize: wp(10), fontFamily: "SpaceGroteskBold", fontWeight: '600', letterSpacing: 2, lineHeight: 0}}>
-                        blah blah blah blah blah blah try try try try try
+                        Villanova University
                     </Text>
                     <Text style = {{fontSize: wp(10), fontFamily: "SpaceGroteskBold", letterSpacing: 2, lineHeight: 0, width: '70%'}} >
-                        Trial Run Stuff
+                        Find a Friend
                     </Text>
                     <Text style = {{fontSize: wp(4), color: '#4A4A4A', lineHeight: 24, letterSpacing: 1, width: '70%', marginTop: 8}}>
-                        Word words words Word words words Word words words Word words words
+                        App that allows you to find a friend at Nova!
                     </Text>
                 </View>
 
