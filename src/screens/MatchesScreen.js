@@ -5,107 +5,129 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
-  Image,
+  Alert,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase';
-import { findBestMatch } from '../MatchingAlgorithm';
+import { db } from '../firebase'; // Assuming you're using Firestore
+import { doc, getDoc, getDocs, collection } from 'firebase/firestore';
 
-export default function MatchesScreen() {
+export default function MatchesScreen({ route }) {
   const [match, setMatch] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const { email } = route.params || {}; // Check if email is passed properly
 
   useEffect(() => {
+    if (!email) {
+      setError('No email passed to MatchesScreen');
+      setLoading(false);
+      return;
+    }
+
     const fetchMatch = async () => {
-      try {
-        const email = await AsyncStorage.getItem("email");
-        if (!email) {
-          console.warn("No email found in AsyncStorage.");
-          setLoading(false);
-          return;
-        }
-
-        const userSnap = await getDoc(doc(db, 'users', email));
-        const currentUser = userSnap.data();
-
-        if (!currentUser?.answers) {
-          console.warn("User has no questionnaire answers.");
-          setLoading(false);
-          return;
-        }
-
-        const result = await findBestMatch(currentUser.answers, email);
-        setMatch(result);
-      } catch (error) {
-        console.error('Error fetching match:', error);
-      } finally {
+      const bestMatch = await findBestMatch(email);
+      if (bestMatch) {
+        setMatch(bestMatch);
+        setLoading(false);
+      } else {
+        setError('No matches found.');
         setLoading(false);
       }
     };
 
     fetchMatch();
-  }, []);
+  }, [email]);
+
+  // Function to compare answers and calculate a match score
+  const compareAnswers = (userAnswers, otherUserAnswers) => {
+    let score = 0;
+    const totalQuestions = Object.keys(userAnswers).length;
+
+    Object.keys(userAnswers).forEach((questionId) => {
+      if (userAnswers[questionId] === otherUserAnswers[questionId]) {
+        score++;
+      }
+    });
+
+    return (score / totalQuestions) * 100; // return percentage match
+  };
+
+  // Function to find the best match
+  const findBestMatch = async (email) => {
+    try {
+      const userRef = doc(db, 'users', email);
+      const userDoc = await getDoc(userRef);
+
+      if (!userDoc.exists()) {
+        setError('User not found.');
+        setLoading(false);
+        return;
+      }
+
+      const userAnswers = userDoc.data().answers;
+      const allUsersSnapshot = await getDocs(collection(db, 'users'));
+      let bestMatch = null;
+      let bestScore = 0;
+
+      allUsersSnapshot.forEach((doc) => {
+        if (doc.id !== email) { // Skip the current user
+          const otherUserAnswers = doc.data().answers;
+          const score = compareAnswers(userAnswers, otherUserAnswers);
+
+          if (score > bestScore) {
+            bestScore = score;
+            bestMatch = doc.data();
+          }
+        }
+      });
+
+      return bestMatch ? { ...bestMatch, score: bestScore } : null;
+    } catch (error) {
+      console.error('Error finding match:', error);
+      setError('An error occurred while finding matches.');
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" />
-        <Text>Finding your best match...</Text>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
   }
 
-  if (!match) {
+  if (error) {
     return (
-      <View style={styles.centered}>
-        <Text>No match found yet.</Text>
+      <View style={styles.container}>
+        <Text style={styles.errorText}>{error}</Text>
       </View>
     );
   }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Your Best Match</Text>
-
-      <View style={styles.box}>
-        {match.profilePic && (
-          <Image source={{ uri: match.profilePic }} style={styles.image} />
-        )}
-        <Text style={styles.name}>{match.fullName}</Text>
-        <Text style={styles.email}>{match.email}</Text>
-
-        <Text style={styles.label}>Similarity Score:</Text>
-        <Text style={styles.value}>{match.score.toFixed(2)}</Text>
-
-        {match.hobbies && (
-          <>
-            <Text style={styles.label}>Hobbies:</Text>
-            <Text style={styles.value}>{match.hobbies}</Text>
-          </>
-        )}
-        {match.favoriteSong && (
-          <>
-            <Text style={styles.label}>Favorite Song:</Text>
-            <Text style={styles.value}>{match.favoriteSong}</Text>
-          </>
-        )}
-        {match.hiddenTalent && (
-          <>
-            <Text style={styles.label}>Hidden Talent:</Text>
-            <Text style={styles.value}>{match.hiddenTalent}</Text>
-          </>
-        )}
-      </View>
+      <Text style={styles.title}>Best Match</Text>
+      {match ? (
+        <View style={styles.matchContainer}>
+          <Text style={styles.matchText}>You matched with: {match.name}</Text>
+          <Text style={styles.matchText}>Email: {match.email}</Text>
+          <Text style={styles.matchText}>Match Score: {match.score.toFixed(2)}%</Text>
+        </View>
+      ) : (
+        <Text style={styles.noMatchText}>No matches found</Text>
+      )}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 24,
+    paddingTop: 60,
+    paddingBottom: 100,
+    paddingHorizontal: 24,
   },
-  centered: {
+  loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -113,38 +135,27 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
+    marginBottom: 20,
     textAlign: 'center',
   },
-  box: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 12,
-    padding: 16,
+  matchContainer: {
     alignItems: 'center',
+    marginTop: 20,
   },
-  image: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    marginBottom: 16,
+  matchText: {
+    fontSize: 18,
+    marginBottom: 10,
   },
-  name: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  email: {
-    fontSize: 14,
+  noMatchText: {
+    fontSize: 18,
     color: 'gray',
-    marginBottom: 12,
+    textAlign: 'center',
+    marginTop: 20,
   },
-  label: {
-    marginTop: 12,
-    fontWeight: 'bold',
-  },
-  value: {
-    fontSize: 16,
-    marginBottom: 6,
+  errorText: {
+    fontSize: 18,
+    color: 'red',
+    textAlign: 'center',
   },
 });
 
