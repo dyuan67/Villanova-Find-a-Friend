@@ -18,18 +18,21 @@ export default function HomeScreen() {
     if (firstName && lastName && username) {
       if (username.toLowerCase().endsWith("villanova.edu")) {
         try {
-          //Save user info to Firestore
-          const userRef = doc(db, "users", username.toLowerCase());
+          const email = username.toLowerCase();
+
+          // Save user info to Firestore
+          const userRef = doc(db, "users", email);
           await setDoc(userRef, {
             fullName: `${firstName} ${lastName}`,
-            email: username.toLowerCase(),
+            email,
             profilePic: null,
             answers: null,
             createdAt: Date.now(),
           });
 
+          // Navigate with email to QuestionnaireScreen
           Alert.alert("Welcome", `Hi, ${firstName}!`, [
-            { text: "Continue", onPress: () => navigation.replace("HomeTabs") },
+            { text: "Continue", onPress: () => navigation.navigate("QuestionnaireScreen", { email }) },
           ]);
         } catch (error) {
           console.error("Firestore error:", error);
@@ -45,7 +48,6 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-
       <View style={styles.container}>
         <Text style={styles.title}>Let's Get Started</Text>
         <Text style={styles.subtitle}>Enter your details to continue</Text>
@@ -145,3 +147,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+

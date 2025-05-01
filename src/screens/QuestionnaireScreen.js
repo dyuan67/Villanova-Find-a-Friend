@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import {View, Text, Pressable, FlatList, StyleSheet, ScrollView, Alert, Button,} from 'react-native';
+import {
+  View,
+  Text,
+  Pressable,
+  FlatList,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  Button,
+} from 'react-native';
+
 import { useRoute } from '@react-navigation/native';
 import { db } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
@@ -170,3 +180,4 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
 });
+
