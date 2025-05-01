@@ -2,6 +2,8 @@ import { View, Text, Button, Image, StyleSheet, TouchableOpacity, ScrollView, Ke
 import React, { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from "@expo/vector-icons";
+import { doc, setDoc } from 'firebase/firestore';
+import { db } from '../firebase'; 
 
 export default function ProfileScreen({ route }) {
   // Destructure name and email directly from route.params
@@ -32,13 +34,29 @@ export default function ProfileScreen({ route }) {
     }
   };
 
-  const handleSubmit = () => {
-    if (image) {
-      setSubmitted(true);
-    } else {
+  const handleSubmit = async () => {
+    if (!image) {
       alert('Please upload an image.');
+      return;
+    }
+  
+    try {
+      const updatedFields = {
+        ...(hobbies && { hobbies }),
+        ...(talent && { hiddenTalent: talent }),
+        ...(music && { favoriteSong: music }),
+        profilePic: image,
+      };
+  
+      await setDoc(doc(db, 'users', email), updatedFields, { merge: true });
+  
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Error saving profile:", err);
+      alert("Something went wrong while saving.");
     }
   };
+  
 
   return (
     <KeyboardAvoidingView
