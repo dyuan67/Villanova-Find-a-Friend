@@ -7,7 +7,7 @@ import { db } from '../firebase';
 export default function MatchesScreen() {
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
-  const [match, setMatch] = useState(null);
+  const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -24,7 +24,7 @@ export default function MatchesScreen() {
     return (score / totalQuestions) * 100;
   };
 
-  const findBestMatch = async (email) => {
+  const findTopMatches = async (email) => {
     try {
       const userRef = doc(db, 'users', email);
       const userDoc = await getDoc(userRef);
@@ -37,31 +37,29 @@ export default function MatchesScreen() {
 
       const userAnswers = userDoc.data().answers;
       const allUsersSnapshot = await getDocs(collection(db, 'users'));
-      let bestMatch = null;
-      let bestScore = 0;
+      const matches = [];
 
-      allUsersSnapshot.forEach((doc) => {
-        if (doc.id !== email) {
-          const otherUserAnswers = doc.data().answers;
+      allUsersSnapshot.forEach((docSnap) => {
+        if (docSnap.id !== email) {
+          const data = docSnap.data();
+          const otherUserAnswers = data.answers;
           const score = compareAnswers(userAnswers, otherUserAnswers);
-
-          if (score > bestScore) {
-            bestScore = score;
-            bestMatch = doc.data();
-          }
+          matches.push({ ...data, score });
         }
       });
 
-      return bestMatch ? { ...bestMatch, score: bestScore } : null;
+      // Sort matches by score descending and pick top 3
+      const topMatches = matches.sort((a, b) => b.score - a.score).slice(0, 3);
+      return topMatches;
     } catch (error) {
-      console.error('Error finding match:', error);
+      console.error('Error finding matches:', error);
       setError('An error occurred while finding matches.');
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    const loadProfileAndMatch = async () => {
+    const loadProfileAndMatches = async () => {
       try {
         const profileString = await AsyncStorage.getItem('profileData');
         if (profileString) {
@@ -70,8 +68,8 @@ export default function MatchesScreen() {
           setEmail(profile.email);
           setFullName(profile.fullName);
 
-          const best = await findBestMatch(profile.email);
-          setMatch(best);
+          const bestMatches = await findTopMatches(profile.email);
+          setMatches(bestMatches);
         } else {
           setError('No profile data found in AsyncStorage.');
         }
@@ -83,7 +81,7 @@ export default function MatchesScreen() {
       }
     };
 
-    loadProfileAndMatch();
+    loadProfileAndMatches();
   }, []);
 
   if (loading) {
@@ -104,17 +102,38 @@ export default function MatchesScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Best Match</Text>
+      <Text style={styles.title}>Top 3 Matches</Text>
       {email && <Text style={styles.userText}>Logged in as: {fullName} ({email})</Text>}
-      {match ? (
-        <View style={styles.matchContainer}>
-          {match.profilePic && (
-            <Image source={{ uri: match.profilePic }} style={styles.profileImage} />
-          )}
-          <Text style={styles.matchText}>You matched with: {match.fullName || match.name}</Text>
-          <Text style={styles.matchText}>Email: {match.email}</Text>
-          <Text style={styles.matchText}>Match Score: {match.score.toFixed(2)}%</Text>
-        </View>
+
+      {matches.length > 0 ? (
+        matches.map((match, index) => (
+          <View key={index} style={styles.matchContainer}>
+            {match.profilePic && (
+              <Image source={{ uri: match.profilePic }} style={styles.profileImage} />
+            )}
+            <Text style={styles.matchText}>
+              {index + 1}. {match.fullName || match.name}
+            </Text>
+            <Text style={styles.matchText}>Email: {match.email}</Text>
+            <Text style={styles.matchText}>Match Score: {match.score.toFixed(2)}%</Text>
+
+            {match.hobbies && (
+              <Text style={styles.matchText}>
+                Hobbies: {Array.isArray(match.hobbies) ? match.hobbies.join(', ') : match.hobbies}
+              </Text>
+            )}
+            {match.hiddenTalent && (
+              <Text style={styles.matchText}>
+                Talents: {Array.isArray(match.hiddenTalent) ? match.hiddenTalent.join(', ') : match.hiddenTalent}
+              </Text>
+            )}
+            {match.favoriteSong && (
+              <Text style={styles.matchText}>
+                Favorite Music: {Array.isArray(match.favoriteSong) ? match.favoriteSong.join(', ') : match.favoriteSong}
+              </Text>
+            )}
+          </View>
+        ))
       ) : (
         <Text style={styles.noMatchText}>No matches found</Text>
       )}
@@ -147,11 +166,15 @@ const styles = StyleSheet.create({
   },
   matchContainer: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 30,
+    paddingBottom: 30,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
   matchText: {
     fontSize: 18,
-    marginBottom: 10,
+    marginBottom: 8,
+    textAlign: 'center',
   },
   noMatchText: {
     fontSize: 18,
@@ -165,9 +188,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   profileImage: {
-    width: 400,
-    height: 400,
+    width: 300,
+    height: 300,
     borderRadius: 10,
-    marginBottom: 20,
+    marginBottom: 15,
   },
 });
