@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import {View, Text, Pressable, FlatList, StyleSheet, ScrollView, Alert, Button,} from 'react-native';
+import { useRoute } from '@react-navigation/native';
 import { db } from '../firebase';
-import { addDoc, collection } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 
 const questions = [
   { id: 'q1', text: 'I enjoy socializing with others.' },
@@ -10,25 +11,25 @@ const questions = [
   { id: 'q4', text: 'I prefer planning over spontaneity.' },
   { id: 'q5', text: 'Do you believe in astrology?' },
   { id: 'q6', text: 'Ketchup should be kept in the refrigerator rather than the pantry.' },
-  { id: 'q7', text: 'Is it rude to not laugh at an unfunny joke?'},
+  { id: 'q7', text: 'Is it rude to not laugh at an unfunny joke?' },
   { id: 'q8', text: 'Do you sing in the shower?' },
-  { id: 'q9', text: 'Toliet paper should be hung over.' },
+  { id: 'q9', text: 'Toilet paper should be hung over.' },
   { id: 'q10', text: 'I would rather fight a hundred duck-sized horses than one horse-sized duck.' },
   { id: 'q11', text: 'Can you trust someone who does not like cartoons?' },
   { id: 'q12', text: 'I would rather have a good superpower that only works once a year than a mediocre power that works every day.' },
   { id: 'q13', text: 'Is it acceptable to eat pizza with a fork and knife?' },
-  { id: 'q14', text: 'Is it better to have a flying car or a teleportation device? (1 = flying car, 5 = teleportation device)'},
-  { id: 'q15', text: 'Cats are a better pet than dogs'},
+  { id: 'q14', text: 'Is it better to have a flying car or a teleportation device? (1 = flying car, 5 = teleportation device)' },
+  { id: 'q15', text: 'Cats are a better pet than dogs' },
   { id: 'q16', text: 'I would rather be a superhero than a supervillain' },
   { id: 'q17', text: 'Is a tomato fruit?' },
   { id: 'q18', text: 'Is cereal a soup?' },
   { id: 'q19', text: 'Is water wet?' },
-  { id: 'q20', text: 'Is a hotdog is a sandwich?' },
-
+  { id: 'q20', text: 'Is a hotdog a sandwich?' },
 ];
 
 export default function QuestionnaireScreen() {
   const [answers, setAnswers] = useState({});
+  const route = useRoute();
 
   const handleAnswer = (questionId, value) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
@@ -38,7 +39,7 @@ export default function QuestionnaireScreen() {
     <View style={styles.questionBlock}>
       <Text style={styles.questionText}>{item.text}</Text>
       <View style={styles.optionsRow}>
-        {[1, 2, 3, 4, 5].map((value) => ( //questions
+        {[1, 2, 3, 4, 5].map((value) => (
           <Pressable
             key={value}
             onPress={() => handleAnswer(item.id, value)}
@@ -70,11 +71,14 @@ export default function QuestionnaireScreen() {
     }
 
     try {
-      //save answers to Firestore anonymously for now
-      await addDoc(collection(db, 'questionnaires'), {
-        answers,
-        submittedAt: Date.now(),
-      });
+      const userEmail = route?.params?.email?.toLowerCase();
+      if (!userEmail) {
+        Alert.alert('Error', 'User email not found.');
+        return;
+      }
+
+      const userRef = doc(db, 'users', userEmail);
+      await setDoc(userRef, { answers }, { merge: true });
 
       Alert.alert('Thank you!', 'Your answers have been saved.');
     } catch (error) {
@@ -82,7 +86,6 @@ export default function QuestionnaireScreen() {
       Alert.alert('Error', 'Something went wrong while saving.');
     }
   };
-  
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -107,16 +110,15 @@ export default function QuestionnaireScreen() {
       <View style={styles.submitButton}>
         <Button title="Submit" onPress={handleSubmit} />
       </View>
-
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 60, 
+    paddingTop: 60,
     paddingBottom: 100,
-    paddingHorizontal: 24
+    paddingHorizontal: 24,
   },
   title: {
     fontSize: 24,
