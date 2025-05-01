@@ -4,9 +4,10 @@ import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from "@expo/vector-icons";
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase'; 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ProfileScreen({ route }) {
-  // Destructure name and email directly from route.params
+
   const { fullName, email } = route.params;
 
   const [image, setImage] = useState(null);
@@ -46,10 +47,16 @@ export default function ProfileScreen({ route }) {
         ...(talent && { hiddenTalent: talent }),
         ...(music && { favoriteSong: music }),
         profilePic: image,
+        fullName,
+        email,
       };
   
       await setDoc(doc(db, 'users', email), updatedFields, { merge: true });
   
+      // Save to AsyncStorage for QuestionnaireScreen
+      await AsyncStorage.setItem('profileData', JSON.stringify(updatedFields));
+
+
       setSubmitted(true);
     } catch (err) {
       console.error("Error saving profile:", err);

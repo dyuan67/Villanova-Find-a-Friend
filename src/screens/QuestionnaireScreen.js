@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,10 +9,10 @@ import {
   Alert,
   Button,
 } from 'react-native';
-
-import { useRoute } from '@react-navigation/native';
 import { db } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRoute } from '@react-navigation/native';
 
 const questions = [
   { id: 'q1', text: 'I enjoy socializing with others.' },
@@ -39,7 +39,23 @@ const questions = [
 
 export default function QuestionnaireScreen() {
   const [answers, setAnswers] = useState({});
-  const route = useRoute();
+  const [email, setEmail] = useState(null);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const stored = await AsyncStorage.getItem('profileData');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          setEmail(parsed.email);
+        }
+      } catch (err) {
+        console.error('Failed to load profile data:', err);
+      }
+    };
+    loadProfile();
+  }, []);
+
 
   const handleAnswer = (questionId, value) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
@@ -81,15 +97,8 @@ export default function QuestionnaireScreen() {
     }
 
     try {
-      const userEmail = route?.params?.email?.toLowerCase();
-      if (!userEmail) {
-        Alert.alert('Error', 'User email not found.');
-        return;
-      }
-
-      const userRef = doc(db, 'users', userEmail);
+      const userRef = doc(db, 'users', email);
       await setDoc(userRef, { answers }, { merge: true });
-
       Alert.alert('Thank you!', 'Your answers have been saved.');
     } catch (error) {
       console.error('Error saving questionnaire:', error);
