@@ -38,7 +38,7 @@ export default function QuestionnaireScreen() {
     <View style={styles.questionBlock}>
       <Text style={styles.questionText}>{item.text}</Text>
       <View style={styles.optionsRow}>
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map((value) => ( //questions
+        {[1, 2, 3, 4, 5].map((value) => ( //questions
           <Pressable
             key={value}
             onPress={() => handleAnswer(item.id, value)}

@@ -7,6 +7,7 @@ export default function ProfileScreen() {
   const [image, setImage] = useState(null);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [hobbies, setHobbies] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
   const pickImage = async () => {
@@ -71,7 +72,12 @@ export default function ProfileScreen() {
               style={styles.input}
               keyboardType="email-address"
             />
-            
+            <TextInput
+              placeholder="Hobbies"
+              value={hobbies}
+              onChangeText={setHobbies}
+              style={styles.input}
+            />
             <Button title="Submit" onPress={handleSubmit} />
           </View>
         </ScrollView>
