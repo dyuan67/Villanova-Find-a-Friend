@@ -30,13 +30,13 @@ export default function HomeScreen() {
             createdAt: Date.now(),
           });
 
-          // Navigate with email to QuestionnaireScreen
+          // Navigate with email to ProfileScreen
           Alert.alert("Welcome", `Hi, ${firstName}!`, [
             {
               text: "Continue",
               onPress: () => navigation.replace("HomeTabs", {
-                screen: "Questionnaire",
-                params: { email },
+                screen: "Profile",
+                params: { email, fullName: `${firstName} ${lastName}`  },
               }),
             },
           ]);

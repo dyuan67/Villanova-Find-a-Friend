@@ -67,6 +67,7 @@ export default function AppNavigation() {
             <Stack.Navigator initialRouteName = "Welcome"
             screenOptions={{ headerShown: false}}>
                 <Stack.Screen name = "Welcome" component = {WelcomeScreen} />
+                <Stack.Screen name = "Profile" component = {ProfileScreen} />
                 <Stack.Screen name = "Home" 
                     component = {HomeScreen} 
                     options = {{presentation : "modal",}}

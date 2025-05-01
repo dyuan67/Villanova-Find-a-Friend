@@ -1,16 +1,15 @@
-import { View, Text, TextInput, Button, Image, StyleSheet, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, Text, Button, Image, StyleSheet, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, TextInput } from 'react-native';
 import React, { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from "@expo/vector-icons";
 
+export default function ProfileScreen({ route }) {
+  // Destructure name and email directly from route.params
+  const { fullName, email } = route.params;
 
-export default function ProfileScreen() {
   const [image, setImage] = useState(null);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
   const [hobbies, setHobbies] = useState('');
   const [music, setMusic] = useState('');
-  //const [sport, setSport] = useState('');
   const [talent, setTalent] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
@@ -34,10 +33,10 @@ export default function ProfileScreen() {
   };
 
   const handleSubmit = () => {
-    if (name && email && image) {
+    if (image) {
       setSubmitted(true);
     } else {
-      alert('Please fill in all fields and upload an image.');
+      alert('Please upload an image.');
     }
   };
 
@@ -49,7 +48,7 @@ export default function ProfileScreen() {
       {submitted ? (
         <View style={styles.profileContainer}>
           {image && <Image source={{ uri: image }} style={styles.profileImage} />}
-          {name !== '' && <Text style={styles.profileText}>Name: {name}</Text>}
+          {fullName !== '' && <Text style={styles.profileText}>Name: {fullName}</Text>}
           {email !== '' && <Text style={styles.profileText}>Email: {email}</Text>}
           {hobbies !== '' && <Text style={styles.profileText}>Hobbies: {hobbies}</Text>}
           {music !== '' && <Text style={styles.profileText}>Favorite Song: {music}</Text>}
@@ -66,19 +65,12 @@ export default function ProfileScreen() {
                 <Text style={styles.imageText}>Tap to upload image</Text>
               )}
             </TouchableOpacity>
-            <TextInput
-              placeholder="First and last name"
-              value={name}
-              onChangeText={setName}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Villanova email"
-              value={email}
-              onChangeText={setEmail}
-              style={styles.input}
-              keyboardType="email-address"
-            />
+
+            {/* Displaying the passed name and email */}
+            <Text style={styles.input}>{fullName}</Text>
+            <Text style={styles.input}>{email}</Text>
+
+            {/* Hobbies Input */}
             <View style={styles.inputWithIcon}>
               <Ionicons name="color-palette-outline" size={20} color="#666" style={styles.icon} />
               <TextInput
@@ -88,6 +80,8 @@ export default function ProfileScreen() {
                 style={styles.inputFlex}
               />
             </View>
+
+            {/* Favorite Song Input */}
             <View style={styles.inputWithIcon}>
               <Ionicons name="musical-notes-outline" size={20} color="#666" style={styles.icon} />
               <TextInput
@@ -97,24 +91,18 @@ export default function ProfileScreen() {
                 style={styles.inputFlex}
               />
             </View>
+
+            {/* Hidden Talent Input */}
             <View style={styles.inputWithIcon}>
               <Ionicons name="sparkles-outline" size={20} color="#666" style={styles.icon} />
               <TextInput
-                placeholder= "What is your Hidden Talent"
+                placeholder="What is your Hidden Talent"
                 value={talent}
                 onChangeText={setTalent}
                 style={styles.inputFlex}
               />
             </View>
-            {/* <View style={styles.inputWithIcon}>
-              <Ionicons name="golf-outline" size={20} color="#666" style={styles.icon} />
-              <TextInput
-                placeholder="Favorite Sport"
-                value={sport}
-                onChangeText={setSport}
-                style={styles.inputFlex}
-              />
-            </View> */}
+
             <Button title="Submit" onPress={handleSubmit} />
           </View>
         </ScrollView>
@@ -162,12 +150,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     marginBottom: 15,
-  },
-  profile: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 120,
+    textAlign: 'center',
   },
   profileContainer: {
     flex: 1,
@@ -200,5 +183,4 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
   },
- 
 });
