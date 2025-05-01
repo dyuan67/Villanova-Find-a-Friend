@@ -1,6 +1,7 @@
 import { View, Text, TextInput, Button, Image, StyleSheet, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native'
 import React, { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from "@expo/vector-icons";
 
 
 export default function ProfileScreen() {
@@ -8,6 +9,9 @@ export default function ProfileScreen() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [hobbies, setHobbies] = useState('');
+  const [music, setMusic] = useState('');
+  //const [sport, setSport] = useState('');
+  const [talent, setTalent] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
   const pickImage = async () => {
@@ -44,10 +48,13 @@ export default function ProfileScreen() {
     >
       {submitted ? (
         <View style={styles.profileContainer}>
-            <Image source={{ uri: image }} style={styles.profileImage} />
-            <Text style={styles.profileText}>Name: {name}</Text>
-            <Text style={styles.profileText}>Email: {email}</Text>
-            <Button title="Edit" onPress={() => setSubmitted(false)} />
+          {image && <Image source={{ uri: image }} style={styles.profileImage} />}
+          {name !== '' && <Text style={styles.profileText}>Name: {name}</Text>}
+          {email !== '' && <Text style={styles.profileText}>Email: {email}</Text>}
+          {hobbies !== '' && <Text style={styles.profileText}>Hobbies: {hobbies}</Text>}
+          {music !== '' && <Text style={styles.profileText}>Favorite Song: {music}</Text>}
+          {talent !== '' && <Text style={styles.profileText}>Hidden Talent: {talent}</Text>}
+          <Button title="Edit" onPress={() => setSubmitted(false)} />
         </View>
       ) : (
         <ScrollView contentContainerStyle={styles.contentContainer}>
@@ -72,12 +79,42 @@ export default function ProfileScreen() {
               style={styles.input}
               keyboardType="email-address"
             />
-            <TextInput
-              placeholder="Hobbies"
-              value={hobbies}
-              onChangeText={setHobbies}
-              style={styles.input}
-            />
+            <View style={styles.inputWithIcon}>
+              <Ionicons name="color-palette-outline" size={20} color="#666" style={styles.icon} />
+              <TextInput
+                placeholder="Hobbies"
+                value={hobbies}
+                onChangeText={setHobbies}
+                style={styles.inputFlex}
+              />
+            </View>
+            <View style={styles.inputWithIcon}>
+              <Ionicons name="musical-notes-outline" size={20} color="#666" style={styles.icon} />
+              <TextInput
+                placeholder="Favorite Song"
+                value={music}
+                onChangeText={setMusic}
+                style={styles.inputFlex}
+              />
+            </View>
+            <View style={styles.inputWithIcon}>
+              <Ionicons name="sparkles-outline" size={20} color="#666" style={styles.icon} />
+              <TextInput
+                placeholder= "What is your Hidden Talent"
+                value={talent}
+                onChangeText={setTalent}
+                style={styles.inputFlex}
+              />
+            </View>
+            {/* <View style={styles.inputWithIcon}>
+              <Ionicons name="golf-outline" size={20} color="#666" style={styles.icon} />
+              <TextInput
+                placeholder="Favorite Sport"
+                value={sport}
+                onChangeText={setSport}
+                style={styles.inputFlex}
+              />
+            </View> */}
             <Button title="Submit" onPress={handleSubmit} />
           </View>
         </ScrollView>
@@ -147,6 +184,21 @@ const styles = StyleSheet.create({
   profileText: {
     fontSize: 18,
     marginBottom: 10,
+  },
+  inputWithIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+  },
+  inputFlex: {
+    flex: 1,
+    padding: 12,
+    fontSize: 16,
   },
  
 });
